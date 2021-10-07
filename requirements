@@ -1,0 +1,35 @@
+* Add notification to your installed apps inside settings.py
+* Run makemigrations and Migrate command
+python manage.py makemigrations and migrate in that order
+
+1. Add the notification context processor in your template context processor this way:
+'notification.context_processors.notifications' and that would make the keyword (notifications) available in the template
+note, if there is an apps folder and the notification is inside the apps folder, then the context processor would navigate his way:
+'app.notification.context_processors.notifications'
+
+4. note if you wish to include the seen notifications and not delete them, you have to modified the filtering in context processor to include the read notification then knows the logic youre going to add to show that its read,(probably change styles)
+
+3. Do not forget to include the notification inside your project urls.py:
+ path('notification/',include('notification'))
+or if the notification app is stored in an apps directory
+ path('notification/',include('apps.notification'))
+4. You can add more notification types in the model and view by just simple code modification
+
+5. To get the total number of unread notifications in your navbar, use:
+eg: <li>Notifications ( {{ notifications.count }} )</li>
+that would return something like Notification (30)
+if you'll need that,
+
+Now to create new notification, in your apps let say for instance the app that handles the comments
+
+inside views.py import the notification utilities
+
+** from notification.utilities import create_notification
+or if there is an apps folder, then
+** from apps.notification.utilities import create_notification
+
+Then after the line that created the functionality you want to notify, call the function and pass the required parameters
+create_notification(request, to_user, notification_type, extra_pk=0)
+for example:
+** create_notification(request, to_user=[post.author], notification_type='comment', extra_pk=post.pk)
+same thing goes for the rest of them

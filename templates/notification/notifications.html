@@ -1,0 +1,34 @@
+{% extends 'your_core_app_name/base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="title">Notifications</h1>
+
+        {% if not notifications %}
+            No notifications yet!
+        {% endif %}
+
+        {% for notification in notifications %}
+            <div class="notification">
+                <p>
+                    {% if notification.notification_type == 'like' %}
+                        <a href="{% url 'notifications' %}?goto=[url name of posts]&notification={{ notification.pk }}&extra_pk={{ notification.extra_pk }}">
+                            <strong>{{ notification.created_by.username }}</strong> liked your post<br>
+                            <small>{{ notification.created_at|timesince }} ago</small>
+                        </a>
+                    {% elif notification.notification_type == 'comment' %}
+                        <a href="{% url 'notifications' %}?goto=[url name of the post that got a new comment ]&notification={{ notification.pk }}&extra_pk={{ notification.extra_pk }}">
+                            <strong>{{ notification.created_by.username }}</strong> commented on your post<br>
+                            <small>{{ notification.created_at|timesince }} ago</small>
+                        </a>
+                        {% elif notification.notification_type == 'comment_replies' %}
+                            <a href="{% url 'notifications' %}?goto=[url name of the comment that got a new reply ]&notification={{ notification.pk }}&extra_pk={{ notification.extra_pk }}">
+                                <strong>{{ notification.created_by.username }}</strong> replied to your comment<br>
+                                <small>{{ notification.created_at|timesince }} ago</small>
+                            </a>
+                    {% endif %}
+                </p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
